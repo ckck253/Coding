@@ -2,206 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coding Class Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coding Class Portal</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
     }
-    #login-box, #main-content, #admin-dashboard {
-      max-width: 400px;
-      margin: 50px auto;
+    .container {
+      max-width: 420px;
+      margin: 60px auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
     }
     input[type="text"], input[type="password"] {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      box-sizing: border-box;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     button {
       width: 100%;
       padding: 12px;
+      margin-top: 12px;
       background: #4a90e2;
-      border: none;
       color: white;
       font-weight: bold;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      border-radius: 6px;
-      margin-top: 12px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #357ac8;
+    }
+    .hidden {
+      display: none;
     }
     .error {
       color: red;
-      text-align: center;
       margin-top: 10px;
     }
-    #attendance-log {
-      max-height: 150px;
-      overflow-y: auto;
-      background: #e8f0fe;
+    .log {
+      text-align: left;
+      background: #f9f9f9;
       padding: 10px;
       margin-top: 20px;
-      border-radius: 6px;
-      font-size: 14px;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    a {
+      color: #4a90e2;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-
-<!-- Login -->
-<div id="login-box">
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Username or Gmail" autocomplete="off" />
-  <input type="password" id="password" placeholder="Password" autocomplete="off" />
+<div class="container" id="login-box">
+  <h2>Login to Coding Class</h2>
+  <input type="text" id="username" placeholder="Username or Email">
+  <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
   <p id="error-msg" class="error"></p>
 </div>
 
-<!-- Student Main -->
-<div id="main-content" style="display:none;">
-  <h2>Welcome, <span id="user-name"></span>!</h2>
-  <p>Class: Coding (Every Monday 8:30 PM Lebanon / 6:30 PM UK)</p>
+<div class="container hidden" id="student-box">
+  <h2>Welcome, <span id="student-name"></span></h2>
+  <p>Class: Every Monday 8:30 PM Lebanon / 6:30 PM UK</p>
   <button onclick="submitAndJoin()">Join Zoom & Mark Attendance</button>
-
-  <div id="attendance-log" style="display:none;">
-    <h3>Attendance Log</h3>
-  </div>
-
-  <button onclick="logout()" style="margin-top:20px; background:#d9534f;">Logout</button>
+  <div class="log" id="attendance-log"></div>
+  <button onclick="logout()" style="background:#d9534f;">Logout</button>
 </div>
 
-<!-- Admin Dashboard -->
-<div id="admin-dashboard" style="display:none;">
-  <h2>Admin Dashboard</h2>
-  <p><strong>Total attendance entries:</strong> <span id="attendance-count">Loading...</span></p>
-  <p><strong>Last student joined:</strong> <span id="last-student">Loading...</span></p>
+<div class="container hidden" id="admin-box">
+  <h2>Teacher Dashboard</h2>
+  <p><strong>Total Attendance:</strong> <span id="attendance-count">Loading...</span></p>
+  <p><strong>Last Joined:</strong> <span id="last-student">Loading...</span></p>
   <p>
-    <a href="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit" target="_blank" rel="noopener noreferrer">
-      View Full Attendance Sheet
-    </a>
+    <a href="https://docs.google.com/spreadsheets/d/1bCqfbQB5esLYpYP7NBZKYDYP6xBsOdhhh-NUK9ORDNA/edit" target="_blank">Open Attendance Sheet</a>
   </p>
+  <button onclick="submitAndJoin()">Join Zoom Class</button>
   <button onclick="logout()" style="background:#d9534f;">Logout</button>
 </div>
 
 <script>
-  // ==== CONFIG ====
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyhD1Wqj6z0toupvTI7w-xrpv6q8BtGpIeHe1N1_FjUi--gZrzK_amp8nQhjWPHompl/exec"; // Replace with your Apps Script Web App URL
+  const ZOOM_LINK = "https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1"; // Replace with your actual Zoom link
+  const SHEET_ID = "1bCqfbQB5esLYpYP7NBZKYDYP6xBsOdhhh-NUK9ORDNA";
 
-  // Replace with your deployed Google Apps Script Web App URL:
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyhD1Wqj6z0toupvTI7w-xrpv6q8BtGpIeHe1N1_FjUi--gZrzK_amp8nQhjWPHompl/exec";
-
-  // Replace with your Zoom link:
-  const ZOOM_LINK = "https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1";
-
-  // Students and passwords (lowercase usernames)
   const students = {
     "joel": "joel123",
     "ali": "ali456",
-    "maya": "maya789"
+    "sara": "sara789"
   };
 
-  // Admin credentials
   const adminEmail = "mrkhalil2121@gmail.com";
-  const adminPassword = "admin123"; // Change to your desired password
-
-  // ==== END CONFIG ====
+  const adminPassword = "admin123";
 
   let loggedInUser = "";
 
   function login() {
-    const username = document.getElementById("username").value.trim().toLowerCase();
-    const password = document.getElementById("password").value.trim();
-    const errorEl = document.getElementById("error-msg");
+    const user = document.getElementById("username").value.trim().toLowerCase();
+    const pass = document.getElementById("password").value.trim();
+    document.getElementById("error-msg").textContent = "";
 
-    errorEl.textContent = "";
-
-    if (username === adminEmail.toLowerCase() && password === adminPassword) {
-      showAdminDashboard();
+    if (user === adminEmail.toLowerCase() && pass === adminPassword) {
+      showAdmin();
       loggedInUser = adminEmail;
-      document.getElementById("login-box").style.display = "none";
+      document.getElementById("login-box").classList.add("hidden");
       return;
     }
 
-    if (students[username] && students[username] === password) {
-      loggedInUser = username;
-      document.getElementById("user-name").textContent = loggedInUser;
-      document.getElementById("login-box").style.display = "none";
-      document.getElementById("main-content").style.display = "block";
-      document.getElementById("attendance-log").style.display = "block";
+    if (students[user] === pass) {
+      loggedInUser = user;
+      document.getElementById("student-name").textContent = user;
+      document.getElementById("login-box").classList.add("hidden");
+      document.getElementById("student-box").classList.remove("hidden");
       return;
     }
 
-    errorEl.textContent = "Incorrect username or password.";
+    document.getElementById("error-msg").textContent = "Invalid credentials.";
   }
 
   function logout() {
-    loggedInUser = "";
-    document.getElementById("login-box").style.display = "block";
-    document.getElementById("main-content").style.display = "none";
-    document.getElementById("admin-dashboard").style.display = "none";
-    document.getElementById("error-msg").textContent = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-  }
-
-  function submitAttendance(name) {
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ name: name }),
-      headers: { "Content-Type": "application/json" }
-    })
-    .then(res => res.text())
-    .then(data => console.log("Attendance logged:", data))
-    .catch(err => console.error("Error logging attendance:", err));
-  }
-
-  function addToAttendanceLog(name) {
-    const log = document.getElementById("attendance-log");
-    const now = new Date().toLocaleString();
-    const entry = document.createElement("div");
-    entry.textContent = `${name} joined at ${now}`;
-    log.prepend(entry);
+    location.reload();
   }
 
   function submitAndJoin() {
-    submitAttendance(loggedInUser); // Log attendance remotely
-    addToAttendanceLog(loggedInUser); // Show on page
-    window.open(ZOOM_LINK, "_blank"); // Open Zoom link
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: loggedInUser })
+    })
+    .then(res => res.text())
+    .then(() => {
+      const log = document.getElementById("attendance-log");
+      if (log) {
+        const entry = document.createElement("div");
+        entry.textContent = `${loggedInUser} joined at ${new Date().toLocaleString()}`;
+        log.prepend(entry);
+      }
+      window.open(ZOOM_LINK, "_blank");
+    })
+    .catch(err => alert("Error logging attendance."));
   }
 
-  function showAdminDashboard() {
-    document.getElementById("login-box").style.display = "none";
-    document.getElementById("main-content").style.display = "none";
-    const adminDash = document.getElementById("admin-dashboard");
-    adminDash.style.display = "block";
-
-    // Update admin dashboard info by fetching CSV data from Google Sheet (optional)
-    const sheetId = "YOUR_SHEET_ID"; // Replace with your Sheet ID
-    const sheetCSVUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-
-    fetch(sheetCSVUrl)
+  function showAdmin() {
+    document.getElementById("admin-box").classList.remove("hidden");
+    fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`)
       .then(res => res.text())
-      .then(csvText => {
-        const rows = csvText.trim().split("\n");
-        const count = rows.length - 1;
-        document.getElementById("attendance-count").textContent = count;
-
-        if (count > 0) {
-          const lastRow = rows[rows.length - 1].split(",");
-          const lastName = lastRow[1] || "N/A"; // Timestamp is first col, name is second
-          document.getElementById("last-student").textContent = lastName;
-        } else {
-          document.getElementById("last-student").textContent = "No attendance yet";
-        }
+      .then(csv => {
+        const rows = csv.trim().split("\n");
+        document.getElementById("attendance-count").textContent = rows.length - 1;
+        const last = rows[rows.length - 1].split(",");
+        document.getElementById("last-student").textContent = last[1] || "Unknown";
       })
       .catch(() => {
-        document.getElementById("attendance-count").textContent = "Error loading data";
-        document.getElementById("last-student").textContent = "Error loading data";
+        document.getElementById("attendance-count").textContent = "Error";
+        document.getElementById("last-student").textContent = "Error";
       });
   }
 </script>
