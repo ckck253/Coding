@@ -2,30 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Coding Class Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coding Class – Attendance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { max-width: 600px; margin: auto; font-family: Arial, sans-serif; padding: 20px; }
-    h1 { text-align: center; }
-    iframe { width: 100%; height: 500px; border: none; }
-    .zoom-info { margin: 20px 0; padding: 10px; background: #f0f0f0; border-radius: 6px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2b2d42;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h1, h2 {
+      color: #2b2d42;
+    }
+
+    .zoom-box {
+      background-color: #edf2f4;
+      padding: 20px;
+      border-left: 4px solid #2b2d42;
+      margin-bottom: 30px;
+      border-radius: 8px;
+    }
+
+    .zoom-box a {
+      color: #ef233c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    iframe {
+      width: 100%;
+      height: 550px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    /* Login styles */
+    #login-box {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #login-box h2 {
+      text-align: center;
+      color: #2b2d42;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2b2d42;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
-<h1>Coding Class Attendance</h1>
-<p><strong>Next class:</strong> Every Monday at 6:30 PM UK time</p>
-
-<div class="zoom-info">
-  <p><strong>Join Zoom Meeting:</strong></p>
-  <p><a href="https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1" target="_blank" rel="noopener noreferrer">Join Class</a></p>
-  <p><strong>Password:</strong> 12345</p>
+<!-- LOGIN SCREEN -->
+<div id="login-box">
+  <h2>Student Login</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="error-msg" class="error"></p>
 </div>
 
-<h2>Mark Your Attendance</h2>
-<p>Please enter your Name and ID below before joining the class:</p>
+<!-- MAIN CONTENT -->
+<div id="main-content" style="display: none;">
+  <header>
+    <h1>Coding Class Attendance</h1>
+    <p>Every Monday at <strong>6:30 PM UK / 8:30 PM Lebanon</strong></p>
+  </header>
 
-<!-- Replace the iframe src with your Google Form embed link -->
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDkPHxXPgL8F7jHuIKTAJRWbOYnqTK3f_uL8qlApGxp8v_Qg/viewform?embedded=true" title="Attendance Form">Loading…</iframe>
+  <div class="container">
+    <section class="zoom-box">
+      <h2>🔗 Zoom Meeting</h2>
+      <p>Join using this link:</p>
+      <p><a href="https://zoom.us/j/123456789" target="_blank">https://zoom.us/j/123456789</a></p>
+      <p>Password: <strong>12345</strong></p>
+    </section>
+
+    <h2>📋 Mark Your Attendance</h2>
+    <p>Please enter your Name and ID below:</p>
+
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDkPHxXPgL8F7jHuIKTAJRWbOYnqTK3f_uL8qlApGxp8v_Qg/viewform?embedded=true" title="Attendance Form">Loading…</iframe>
+  </div>
+
+  <footer>
+    &copy; 2025 Coding Class | Powered by Mr. Cesar Karam
+  </footer>
+</div>
+
+<!-- Login Script -->
+<script>
+  function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    const error = document.getElementById("error-msg");
+
+    if (user === "joel" && pass === "joel123") {
+      document.getElementById("login-box").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+    } else {
+      error.textContent = "Incorrect username or password.";
+    }
+  }
+</script>
 
 </body>
 </html>
