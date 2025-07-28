@@ -60,7 +60,6 @@
       color: #888;
     }
 
-    /* Login styles */
     #login-box {
       max-width: 400px;
       margin: 80px auto;
@@ -102,7 +101,7 @@
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login-box">
   <h2>Student Login</h2>
   <input type="text" id="username" placeholder="Username">
@@ -111,7 +110,7 @@
   <p id="error-msg" class="error"></p>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div id="main-content" style="display: none;">
   <header>
     <h1>Coding Class Attendance</h1>
@@ -120,14 +119,14 @@
 
   <div class="container">
     <section class="zoom-box">
-      <h2>✅ You are logged in</h2>
-      <p>Click below to join Zoom & mark your attendance.</p>
-      <button onclick="markAttendanceAndJoin()">Join Zoom</button>
+      <h2>✅ Welcome</h2>
+      <p>Click below to mark attendance and join Zoom.</p>
+      <button onclick="submitAndJoin()">Join Zoom</button>
     </section>
   </div>
 
   <footer>
-    &copy; 2025 Coding Class | Powered by Mr. Khalil
+    &copy; 2025 Coding Class | Powered by Mr. Cesar Karam
   </footer>
 </div>
 
@@ -139,7 +138,6 @@
     const pass = document.getElementById("password").value.trim();
     const error = document.getElementById("error-msg");
 
-    // Only allow joel / joel123 for now
     if (user.toLowerCase() === "joel" && pass === "joel123") {
       loggedInName = user;
       document.getElementById("login-box").style.display = "none";
@@ -149,17 +147,27 @@
     }
   }
 
-  function markAttendanceAndJoin() {
+  function submitAndJoin() {
     const name = encodeURIComponent(loggedInName);
-    const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdGeAYRYu_wqk1TkW4E-A1El4pCTFxVpQAf1pSH2ejlqISXKg/formResponse?entry.1441182965=" + name;
 
-    // Submit attendance silently
-    fetch(formURL, { method: "POST", mode: "no-cors" });
+    // ✅ Replace this with your real pre-fill Form URL
+    const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdGeAYRYu_wqk1TkW4E-A1El4pCTFxVpQAf1pSH2ejlqISXKg/viewform?usp=pp_url&entry.1441182965=" + name;
 
-    // Redirect to Zoom meeting after 1 second
+    // Open attendance form and auto-submit it
+    const win = window.open(formURL, "hiddenFormWindow", "width=500,height=500");
+    
+    // Automatically submit the form after it loads
+    setTimeout(() => {
+      win.document.querySelector("form").submit();
+      setTimeout(() => {
+        win.close();
+      }, 1000);
+    }, 2000);
+
+    // Open Zoom meeting
     setTimeout(() => {
       window.open("https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1", "_blank");
-    }, 1000);
+    }, 3000);
   }
 </script>
 
