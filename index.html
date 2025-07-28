@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coding Class Portal</title>
+  <title>Coding Class</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto:wght@400;700&display=swap');
 
-    /* Reset */
     * {
       box-sizing: border-box;
     }
@@ -86,6 +85,7 @@
       transition: background-color 0.3s ease;
       user-select: none;
       box-shadow: 0 4px 12px #38bdf8aa;
+      margin-bottom: 10px;
     }
 
     button:hover {
@@ -133,12 +133,11 @@
       font-family: 'Fira Code', monospace;
       font-size: 0.85rem;
       color: #94a3b8;
-      margin-top: 25px;
+      margin-top: 10px;
       user-select: text;
     }
 
     .btn-logout {
-      margin-top: 30px;
       background: #ef4444;
       color: white;
       font-weight: 700;
@@ -152,49 +151,11 @@
 
     .btn-zoom {
       background: #22c55e;
-      margin-bottom: 10px;
       box-shadow: 0 4px 12px #22c55eaa;
     }
 
     .btn-zoom:hover {
       background: #16a34a;
-    }
-
-    /* Admin table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 0.9rem;
-      color: #cbd5e1;
-    }
-
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #334155;
-      text-align: left;
-      font-family: 'Fira Code', monospace;
-    }
-
-    th {
-      background-color: #1e40af;
-      user-select: none;
-    }
-
-    /* Scroll for table */
-    .table-wrapper {
-      max-height: 250px;
-      overflow-y: auto;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-    }
-
-    /* Responsive */
-    @media (max-width: 520px) {
-      .container {
-        padding: 20px;
-      }
     }
   </style>
 </head>
@@ -225,7 +186,8 @@
     <!-- ADMIN PANEL -->
     <div id="admin-panel">
       <h2>Admin Panel</h2>
-      <div class="info">Attendance log (session info will appear here):</div>
+      <button class="btn-zoom" onclick="joinZoom()">Join Zoom Class</button>
+      <div class="info" style="margin-top: 10px;">Attendance log (students logged in this session):</div>
       <div class="log" id="admin-log">
         <!-- attendance logs go here -->
       </div>
@@ -256,6 +218,9 @@
 
     let currentUser = "";
     let currentRole = "";
+
+    // Store attendance locally for admin log
+    let attendanceLog = [];
 
     function login() {
       const userInput = document.getElementById("username").value.trim().toLowerCase();
@@ -289,18 +254,25 @@
       const now = new Date().toLocaleString();
       const logElem = document.getElementById("log");
       logElem.innerHTML = `<p><strong>${currentUser}</strong> attendance logged at ${now}</p>`;
+
+      // Add to local attendance log
+      attendanceLog.push({ name: currentUser, time: now });
     }
 
     function showAdminPanel() {
       document.getElementById("admin-panel").style.display = "block";
 
-      // For now, just show local attendance logs in this session
-      // In real app, admin can check Google Sheet manually or add backend later
       const adminLog = document.getElementById("admin-log");
-      adminLog.innerHTML = "";
-
-      // Could be enhanced by pulling data via API in future
-      adminLog.innerHTML = `<p>Attendance records are saved in the connected Google Sheet.<br>Check it online for full logs.</p>`;
+      if (attendanceLog.length === 0) {
+        adminLog.innerHTML = "<p>No students have logged attendance yet this session.</p>";
+      } else {
+        let html = "<ul>";
+        attendanceLog.forEach(entry => {
+          html += `<li><strong>${entry.name}</strong> joined at ${entry.time}</li>`;
+        });
+        html += "</ul>";
+        adminLog.innerHTML = html;
+      }
     }
 
     function joinZoom() {
