@@ -5,106 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coding Class</title>
   <style>
+    /* Same CSS as before (your awesome styling) */
     @import url('https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto:wght@400;700&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
+      margin: 0; font-family: 'Roboto', sans-serif;
       background: linear-gradient(135deg, #1e293b, #0f172a);
-      color: #cbd5e1;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #cbd5e1; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
       padding: 20px;
     }
-
     .container {
-      background: #0f172a;
-      padding: 30px 40px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(100, 116, 139, 0.6);
-      max-width: 480px;
-      width: 100%;
+      background: #0f172a; padding: 30px 40px;
+      border-radius: 12px; box-shadow: 0 8px 24px rgba(100,116,139,0.6);
+      max-width: 480px; width: 100%;
     }
-
     h1, h2 {
       font-family: 'Fira Code', monospace;
-      text-align: center;
-      color: #38bdf8;
-      margin-bottom: 1rem;
-      user-select: none;
+      text-align: center; color: #38bdf8;
+      margin-bottom: 1rem; user-select: none;
       text-shadow: 0 0 5px #38bdf8;
     }
-
     label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #94a3b8;
+      display: block; margin-bottom: 6px;
+      font-weight: 600; color: #94a3b8;
     }
-
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-      font-family: 'Fira Code', monospace;
-      background: #1e293b;
-      color: #cbd5e1;
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 12px 14px; margin-bottom: 20px;
+      border-radius: 8px; border: none;
+      font-size: 1rem; font-family: 'Fira Code', monospace;
+      background: #1e293b; color: #cbd5e1;
       box-shadow: inset 0 0 8px #0f172a;
       transition: box-shadow 0.3s ease;
     }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-      outline: none;
-      box-shadow: 0 0 12px #38bdf8;
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none; box-shadow: 0 0 12px #38bdf8;
       background: #152238;
     }
-
     button {
-      width: 100%;
-      padding: 14px 0;
-      border: none;
-      border-radius: 10px;
-      background: #0ea5e9;
-      color: #0f172a;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.05em;
+      width: 100%; padding: 14px 0;
+      border: none; border-radius: 10px;
+      background: #0ea5e9; color: #0f172a;
+      font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.05em;
       font-family: 'Fira Code', monospace;
       transition: background-color 0.3s ease;
       user-select: none;
       box-shadow: 0 4px 12px #38bdf8aa;
       margin-bottom: 10px;
     }
-
     button:hover {
-      background: #0284c7;
-      color: #e0f2fe;
+      background: #0284c7; color: #e0f2fe;
     }
-
     #error-msg {
-      color: #f87171;
-      text-align: center;
-      margin-bottom: 15px;
-      font-weight: 700;
+      color: #f87171; text-align: center;
+      margin-bottom: 15px; font-weight: 700;
       user-select: none;
     }
-
     #dashboard, #admin-panel {
       display: none;
     }
-
     .welcome {
       text-align: center;
       font-family: 'Fira Code', monospace;
@@ -114,7 +74,6 @@
       text-shadow: 0 0 10px #0ea5e9;
       user-select: none;
     }
-
     .info {
       text-align: center;
       font-style: italic;
@@ -123,7 +82,6 @@
       font-size: 0.9rem;
       user-select: none;
     }
-
     .log {
       background: #1e293b;
       border-radius: 8px;
@@ -136,7 +94,6 @@
       margin-top: 10px;
       user-select: text;
     }
-
     .btn-logout {
       background: #ef4444;
       color: white;
@@ -144,16 +101,13 @@
       letter-spacing: 0.1em;
       box-shadow: 0 4px 12px #f87171aa;
     }
-
     .btn-logout:hover {
       background: #dc2626;
     }
-
     .btn-zoom {
       background: #22c55e;
       box-shadow: 0 4px 12px #22c55eaa;
     }
-
     .btn-zoom:hover {
       background: #16a34a;
     }
@@ -165,7 +119,7 @@
 
     <!-- LOGIN BOX -->
     <div id="login-box">
-      <h1>Welcome to Coding Cls</h1>
+      <h1>Welcome to Coding Class</h1>
       <label for="username">Username</label>
       <input type="text" id="username" placeholder="Enter your username" autocomplete="off" />
       <label for="password">Password</label>
@@ -209,89 +163,102 @@
   </div>
 
   <script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzcUtTaTgIZrMZEVAJ8Tihe70aaQkaIdaKPnVoZEjlMQhgqx2l7N41WhMgb2Syn3F8/exec"; // Replace with actual script URL
-  let currentUser = "";
-  let currentRole = "";
-  let attendanceLog = [];
+    const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE"; // Put your Apps Script URL here
+    let currentUser = "";
+    let currentRole = "";
+    let attendanceLog = [];
 
-  function login() {
-    const userInput = document.getElementById("username").value.trim().toLowerCase();
-    const passInput = document.getElementById("password").value.trim();
-    const errorMsg = document.getElementById("error-msg");
+    function login() {
+      const userInput = document.getElementById("username").value.trim().toLowerCase();
+      const passInput = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("error-msg");
 
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: userInput, password: passInput })
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (!data.success) {
-        errorMsg.textContent = data.error || "Login failed.";
-        return;
-      }
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: userInput, password: passInput })
+      })
+      .then(r => {
+        if (!r.ok) throw new Error("Network response was not ok");
+        return r.json();
+      })
+      .then(data => {
+        if (!data.success) {
+          errorMsg.textContent = data.error || "Incorrect username or password.";
+          return;
+        }
+        currentUser = userInput;
+        currentRole = data.role;
+        errorMsg.textContent = "";
+        document.getElementById("login-box").style.display = "none";
 
-      currentUser = userInput;
-      currentRole = data.role;
-      errorMsg.textContent = "";
-      document.getElementById("login-box").style.display = "none";
-
-      if (data.role === "student") {
-        showStudentDashboard(data.zoomLink);
-      } else if (data.role === "admin") {
-        showAdminPanel(data.zoomLink);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      errorMsg.textContent = "Server error. Try again.";
-    });
-  }
-
-  function showStudentDashboard(zoomLink) {
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("student-name").textContent = currentUser;
-
-    document.getElementById("form-name").value = currentUser;
-    document.getElementById("attendance-form").submit();
-
-    const now = new Date().toLocaleString();
-    document.getElementById("log").innerHTML = `<p><strong>${currentUser}</strong> attendance logged at ${now}</p>`;
-    attendanceLog.push({ name: currentUser, time: now });
-
-    // Save the Zoom link for join button
-    document.querySelector(".btn-zoom").onclick = () => window.open(zoomLink, "_blank");
-  }
-
-  function showAdminPanel(zoomLink) {
-    document.getElementById("admin-panel").style.display = "block";
-
-    const adminLog = document.getElementById("admin-log");
-    if (attendanceLog.length === 0) {
-      adminLog.innerHTML = "<p>No students have logged attendance yet this session.</p>";
-    } else {
-      adminLog.innerHTML = attendanceLog.map(
-        entry => `<li><strong>${entry.name}</strong> joined at ${entry.time}</li>`
-      ).join("");
+        if (currentRole === "student") {
+          showStudentDashboard(data.zoomLink);
+        } else if (currentRole === "admin") {
+          showAdminPanel(data.zoomLink);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        errorMsg.textContent = "Server error. Try again.";
+      });
     }
 
-    document.querySelector("#admin-panel .btn-zoom").onclick = () => window.open(zoomLink, "_blank");
-  }
+    function showStudentDashboard(zoomLink) {
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("student-name").textContent = currentUser;
 
-  function logout() {
-    currentUser = "";
-    currentRole = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-    document.getElementById("dashboard").style.display = "none";
-    document.getElementById("admin-panel").style.display = "none";
-    document.getElementById("login-box").style.display = "block";
-    document.getElementById("log").innerHTML = "";
-    document.getElementById("admin-log").innerHTML = "";
-    document.getElementById("error-msg").textContent = "";
-  }
-</script>
+      // Submit attendance to Google Form automatically
+      document.getElementById("form-name").value = currentUser;
+      document.getElementById("attendance-form").submit();
 
+      const now = new Date().toLocaleString();
+      const logElem = document.getElementById("log");
+      logElem.innerHTML = `<p><strong>${currentUser}</strong> attendance logged at ${now}</p>`;
+
+      attendanceLog.push({ name: currentUser, time: now });
+
+      // Attach Zoom link
+      document.querySelector("#dashboard .btn-zoom").onclick = () => window.open(zoomLink, "_blank");
+    }
+
+    function showAdminPanel(zoomLink) {
+      document.getElementById("admin-panel").style.display = "block";
+
+      const adminLog = document.getElementById("admin-log");
+      if (attendanceLog.length === 0) {
+        adminLog.innerHTML = "<p>No students have logged attendance yet this session.</p>";
+      } else {
+        let html = "<ul>";
+        attendanceLog.forEach(entry => {
+          html += `<li><strong>${entry.name}</strong> joined at ${entry.time}</li>`;
+        });
+        html += "</ul>";
+        adminLog.innerHTML = html;
+      }
+
+      // Attach Zoom link for admin join button
+      document.querySelector("#admin-panel .btn-zoom").onclick = () => window.open(zoomLink, "_blank");
+    }
+
+    function joinZoom() {
+      // Fallback, should be overwritten after login
+      alert("Please login first.");
+    }
+
+    function logout() {
+      currentUser = "";
+      currentRole = "";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("admin-panel").style.display = "none";
+      document.getElementById("login-box").style.display = "block";
+      document.getElementById("log").innerHTML = "";
+      document.getElementById("admin-log").innerHTML = "";
+      document.getElementById("error-msg").textContent = "";
+    }
+  </script>
 
 </body>
 </html>
