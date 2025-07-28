@@ -165,7 +165,7 @@
 
     <!-- LOGIN BOX -->
     <div id="login-box">
-      <h1>Welcome to Coding Class</h1>
+      <h1>Welcome to Coding Cls</h1>
       <label for="username">Username</label>
       <input type="text" id="username" placeholder="Enter your username" autocomplete="off" />
       <label for="password">Password</label>
@@ -209,89 +209,89 @@
   </div>
 
   <script>
-    const users = {
-      joel: { password: "joel123", role: "student" },
-      ali: { password: "ali456", role: "student" },
-      sara: { password: "sara789", role: "student" },
-      teacher: { password: "teach123", role: "admin" }
-    };
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzcUtTaTgIZrMZEVAJ8Tihe70aaQkaIdaKPnVoZEjlMQhgqx2l7N41WhMgb2Syn3F8/exec"; // Replace with actual script URL
+  let currentUser = "";
+  let currentRole = "";
+  let attendanceLog = [];
 
-    let currentUser = "";
-    let currentRole = "";
+  function login() {
+    const userInput = document.getElementById("username").value.trim().toLowerCase();
+    const passInput = document.getElementById("password").value.trim();
+    const errorMsg = document.getElementById("error-msg");
 
-    // Store attendance locally for admin log
-    let attendanceLog = [];
-
-    function login() {
-      const userInput = document.getElementById("username").value.trim().toLowerCase();
-      const passInput = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("error-msg");
-
-      if (users[userInput] && users[userInput].password === passInput) {
-        currentUser = userInput;
-        currentRole = users[userInput].role;
-        errorMsg.textContent = "";
-        document.getElementById("login-box").style.display = "none";
-
-        if (currentRole === "student") {
-          showStudentDashboard();
-        } else if (currentRole === "admin") {
-          showAdminPanel();
-        }
-      } else {
-        errorMsg.textContent = "Incorrect username or password.";
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: userInput, password: passInput })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) {
+        errorMsg.textContent = data.error || "Login failed.";
+        return;
       }
-    }
 
-    function showStudentDashboard() {
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("student-name").textContent = currentUser;
+      currentUser = userInput;
+      currentRole = data.role;
+      errorMsg.textContent = "";
+      document.getElementById("login-box").style.display = "none";
 
-      // Submit attendance to Google Form
-      document.getElementById("form-name").value = currentUser;
-      document.getElementById("attendance-form").submit();
-
-      const now = new Date().toLocaleString();
-      const logElem = document.getElementById("log");
-      logElem.innerHTML = `<p><strong>${currentUser}</strong> attendance logged at ${now}</p>`;
-
-      // Add to local attendance log
-      attendanceLog.push({ name: currentUser, time: now });
-    }
-
-    function showAdminPanel() {
-      document.getElementById("admin-panel").style.display = "block";
-
-      const adminLog = document.getElementById("admin-log");
-      if (attendanceLog.length === 0) {
-        adminLog.innerHTML = "<p>No students have logged attendance yet this session.</p>";
-      } else {
-        let html = "<ul>";
-        attendanceLog.forEach(entry => {
-          html += `<li><strong>${entry.name}</strong> joined at ${entry.time}</li>`;
-        });
-        html += "</ul>";
-        adminLog.innerHTML = html;
+      if (data.role === "student") {
+        showStudentDashboard(data.zoomLink);
+      } else if (data.role === "admin") {
+        showAdminPanel(data.zoomLink);
       }
+    })
+    .catch(err => {
+      console.error(err);
+      errorMsg.textContent = "Server error. Try again.";
+    });
+  }
+
+  function showStudentDashboard(zoomLink) {
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("student-name").textContent = currentUser;
+
+    document.getElementById("form-name").value = currentUser;
+    document.getElementById("attendance-form").submit();
+
+    const now = new Date().toLocaleString();
+    document.getElementById("log").innerHTML = `<p><strong>${currentUser}</strong> attendance logged at ${now}</p>`;
+    attendanceLog.push({ name: currentUser, time: now });
+
+    // Save the Zoom link for join button
+    document.querySelector(".btn-zoom").onclick = () => window.open(zoomLink, "_blank");
+  }
+
+  function showAdminPanel(zoomLink) {
+    document.getElementById("admin-panel").style.display = "block";
+
+    const adminLog = document.getElementById("admin-log");
+    if (attendanceLog.length === 0) {
+      adminLog.innerHTML = "<p>No students have logged attendance yet this session.</p>";
+    } else {
+      adminLog.innerHTML = attendanceLog.map(
+        entry => `<li><strong>${entry.name}</strong> joined at ${entry.time}</li>`
+      ).join("");
     }
 
-    function joinZoom() {
-      window.open("https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1", "_blank");
-    }
+    document.querySelector("#admin-panel .btn-zoom").onclick = () => window.open(zoomLink, "_blank");
+  }
 
-    function logout() {
-      currentUser = "";
-      currentRole = "";
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("dashboard").style.display = "none";
-      document.getElementById("admin-panel").style.display = "none";
-      document.getElementById("login-box").style.display = "block";
-      document.getElementById("log").innerHTML = "";
-      document.getElementById("admin-log").innerHTML = "";
-      document.getElementById("error-msg").textContent = "";
-    }
-  </script>
+  function logout() {
+    currentUser = "";
+    currentRole = "";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("admin-panel").style.display = "none";
+    document.getElementById("login-box").style.display = "block";
+    document.getElementById("log").innerHTML = "";
+    document.getElementById("admin-log").innerHTML = "";
+    document.getElementById("error-msg").textContent = "";
+  }
+</script>
+
 
 </body>
 </html>
