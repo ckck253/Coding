@@ -3,115 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coding Class – Attendance & Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Coding Class Attendance</title>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
       margin: 0;
       padding: 0;
     }
-    header {
-      background-color: #2b2d42;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    h1, h2 {
-      color: #2b2d42;
-    }
-    .zoom-box {
-      background-color: #edf2f4;
-      padding: 20px;
-      border-left: 4px solid #2b2d42;
-      margin-bottom: 30px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .zoom-box button {
-      background-color: #2b2d42;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #888;
-    }
-    #login-box {
+    #login-box, #main-content, #admin-dashboard {
       max-width: 400px;
-      margin: 80px auto;
-      padding: 30px;
+      margin: 50px auto;
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #login-box h2 {
-      text-align: center;
-      color: #2b2d42;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     input[type="text"], input[type="password"] {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
     }
     button {
       width: 100%;
       padding: 12px;
-      background-color: #2b2d42;
+      background: #4a90e2;
+      border: none;
       color: white;
       font-weight: bold;
-      border: none;
-      border-radius: 6px;
       cursor: pointer;
+      border-radius: 6px;
+      margin-top: 12px;
     }
     .error {
       color: red;
       text-align: center;
+      margin-top: 10px;
     }
-    /* Admin dashboard */
-    #admin-dashboard {
-      max-width: 800px;
-      margin: 30px auto;
-      background: #e6f2ff;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      display: none;
-    }
-    #admin-dashboard h2 {
-      color: #1a4d8f;
-    }
-    #admin-dashboard p {
-      font-size: 1.1em;
-    }
-    #admin-dashboard a {
-      color: #1a4d8f;
-      font-weight: bold;
-      text-decoration: none;
+    #attendance-log {
+      max-height: 150px;
+      overflow-y: auto;
+      background: #e8f0fe;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 6px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- Login -->
 <div id="login-box">
   <h2>Login</h2>
   <input type="text" id="username" placeholder="Username or Gmail" autocomplete="off" />
@@ -120,54 +63,55 @@
   <p id="error-msg" class="error"></p>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- Student Main -->
 <div id="main-content" style="display:none;">
-  <header>
-    <h1>Coding Class Attendance</h1>
-    <p>Every Monday at <strong>6:30 PM UK / 8:30 PM Lebanon</strong></p>
-  </header>
-  <div class="container" id="student-section">
-    <section class="zoom-box">
-      <h2>✅ Welcome</h2>
-      <p>Click below to mark attendance and join Zoom.</p>
-      <button onclick="submitAndJoin()">Join Zoom</button>
-    </section>
+  <h2>Welcome, <span id="user-name"></span>!</h2>
+  <p>Class: Coding (Every Monday 8:30 PM Lebanon / 6:30 PM UK)</p>
+  <button onclick="submitAndJoin()">Join Zoom & Mark Attendance</button>
+
+  <div id="attendance-log" style="display:none;">
+    <h3>Attendance Log</h3>
   </div>
-  <footer>
-    &copy; 2025 Coding Class | Powered by Mr. Cesar
-  </footer>
+
+  <button onclick="logout()" style="margin-top:20px; background:#d9534f;">Logout</button>
 </div>
 
-<!-- ADMIN DASHBOARD -->
-<div id="admin-dashboard">
-  <h2>📊 Admin Dashboard</h2>
-  <p><strong>Total attendance entries recorded:</strong> <span id="attendance-count">Loading...</span></p>
+<!-- Admin Dashboard -->
+<div id="admin-dashboard" style="display:none;">
+  <h2>Admin Dashboard</h2>
+  <p><strong>Total attendance entries:</strong> <span id="attendance-count">Loading...</span></p>
   <p><strong>Last student joined:</strong> <span id="last-student">Loading...</span></p>
   <p>
-    <a href="https://docs.google.com/spreadsheets/d/1Tyk3A6VwBffR0DPv8Almv-rHFcv-gk-gDd3WTTx2ep4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">View full attendance sheet</a>
+    <a href="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit" target="_blank" rel="noopener noreferrer">
+      View Full Attendance Sheet
+    </a>
   </p>
-  <button onclick="logout()">Logout</button>
+  <button onclick="logout()" style="background:#d9534f;">Logout</button>
 </div>
 
 <script>
-  // STUDENTS & ADMIN CREDENTIALS
+  // ==== CONFIG ====
+
+  // Replace with your deployed Google Apps Script Web App URL:
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyhD1Wqj6z0toupvTI7w-xrpv6q8BtGpIeHe1N1_FjUi--gZrzK_amp8nQhjWPHompl/exec";
+
+  // Replace with your Zoom link:
+  const ZOOM_LINK = "https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1";
+
+  // Students and passwords (lowercase usernames)
   const students = {
     "joel": "joel123",
     "ali": "ali456",
     "maya": "maya789"
   };
+
+  // Admin credentials
   const adminEmail = "mrkhalil2121@gmail.com";
-  const adminPassword = "admin123"; // Change this password
+  const adminPassword = "admin123"; // Change to your desired password
+
+  // ==== END CONFIG ====
 
   let loggedInUser = "";
-
-  // Format Date to YYYY-MM-DD
-  function formatDate(date) {
-    const y = date.getFullYear();
-    const m = (date.getMonth()+1).toString().padStart(2,"0");
-    const d = date.getDate().toString().padStart(2,"0");
-    return `${y}-${m}-${d}`;
-  }
 
   function login() {
     const username = document.getElementById("username").value.trim().toLowerCase();
@@ -185,37 +129,49 @@
 
     if (students[username] && students[username] === password) {
       loggedInUser = username;
+      document.getElementById("user-name").textContent = loggedInUser;
       document.getElementById("login-box").style.display = "none";
       document.getElementById("main-content").style.display = "block";
+      document.getElementById("attendance-log").style.display = "block";
       return;
     }
 
     errorEl.textContent = "Incorrect username or password.";
   }
 
+  function logout() {
+    loggedInUser = "";
+    document.getElementById("login-box").style.display = "block";
+    document.getElementById("main-content").style.display = "none";
+    document.getElementById("admin-dashboard").style.display = "none";
+    document.getElementById("error-msg").textContent = "";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+  }
+
+  function submitAttendance(name) {
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({ name: name }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.text())
+    .then(data => console.log("Attendance logged:", data))
+    .catch(err => console.error("Error logging attendance:", err));
+  }
+
+  function addToAttendanceLog(name) {
+    const log = document.getElementById("attendance-log");
+    const now = new Date().toLocaleString();
+    const entry = document.createElement("div");
+    entry.textContent = `${name} joined at ${now}`;
+    log.prepend(entry);
+  }
+
   function submitAndJoin() {
-    const name = encodeURIComponent(loggedInUser);
-    const today = formatDate(new Date());
-
-    // Google Form pre-fill URL with your entry IDs for Date and Name
-    const formURL = `https://docs.google.com/forms/d/e/1FAIpQLScxFMIL7IVDoCg7kOKt1dtq0W2VQzd4WuxKL5PL8_Wbf9T3rw/viewform?usp=pp_url&entry.1317798729=${today}&entry.1489083822=${name}`;
-
-    // Open the attendance form in a small hidden window and auto-submit after load
-    const attendanceWindow = window.open(formURL, "attendanceWindow", "width=500,height=500,top=100,left=100");
-
-    setTimeout(() => {
-      try {
-        attendanceWindow.document.querySelector("form").submit();
-        setTimeout(() => attendanceWindow.close(), 1000);
-      } catch (e) {
-        // cross-origin error, fallback is to leave form open for user
-      }
-    }, 2500);
-
-    // Open Zoom link after delay (replace with your Zoom meeting link)
-    setTimeout(() => {
-      window.open("https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1", "_blank");
-    }, 3500);
+    submitAttendance(loggedInUser); // Log attendance remotely
+    addToAttendanceLog(loggedInUser); // Show on page
+    window.open(ZOOM_LINK, "_blank"); // Open Zoom link
   }
 
   function showAdminDashboard() {
@@ -224,8 +180,9 @@
     const adminDash = document.getElementById("admin-dashboard");
     adminDash.style.display = "block";
 
-    // Replace YOUR_SHEET_ID below with the ID of your Google Sheet linked to form responses
-    const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/1Tyk3A6VwBffR0DPv8Almv-rHFcv-gk-gDd3WTTx2ep4/export?format=csv";
+    // Update admin dashboard info by fetching CSV data from Google Sheet (optional)
+    const sheetId = "YOUR_SHEET_ID"; // Replace with your Sheet ID
+    const sheetCSVUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
     fetch(sheetCSVUrl)
       .then(res => res.text())
@@ -236,7 +193,7 @@
 
         if (count > 0) {
           const lastRow = rows[rows.length - 1].split(",");
-          const lastName = lastRow[2] || "N/A"; // Adjust index if needed
+          const lastName = lastRow[1] || "N/A"; // Timestamp is first col, name is second
           document.getElementById("last-student").textContent = lastName;
         } else {
           document.getElementById("last-student").textContent = "No attendance yet";
@@ -246,16 +203,6 @@
         document.getElementById("attendance-count").textContent = "Error loading data";
         document.getElementById("last-student").textContent = "Error loading data";
       });
-  }
-
-  function logout() {
-    loggedInUser = "";
-    document.getElementById("admin-dashboard").style.display = "none";
-    document.getElementById("main-content").style.display = "none";
-    document.getElementById("login-box").style.display = "block";
-    document.getElementById("error-msg").textContent = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
   }
 </script>
 
