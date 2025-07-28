@@ -134,7 +134,7 @@
     </section>
   </div>
   <footer>
-    &copy; 2025 Coding Class | Powered by Mr. Cesar Karam
+    &copy; 2025 Coding Class | Powered by Mr. Cesar
   </footer>
 </div>
 
@@ -144,7 +144,7 @@
   <p><strong>Total attendance entries recorded:</strong> <span id="attendance-count">Loading...</span></p>
   <p><strong>Last student joined:</strong> <span id="last-student">Loading...</span></p>
   <p>
-    <a href="YOUR_GOOGLE_SHEET_LINK" target="_blank" rel="noopener noreferrer">View full attendance sheet</a>
+    <a href="https://docs.google.com/spreadsheets/d/1Tyk3A6VwBffR0DPv8Almv-rHFcv-gk-gDd3WTTx2ep4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">View full attendance sheet</a>
   </p>
   <button onclick="logout()">Logout</button>
 </div>
@@ -157,11 +157,18 @@
     "maya": "maya789"
   };
   const adminEmail = "mrkhalil2121@gmail.com";
-  const adminPassword = "admin123"; // Change this password to a secure one you like
+  const adminPassword = "admin123"; // Change this password
 
   let loggedInUser = "";
 
-  // LOGIN FUNCTION
+  // Format Date to YYYY-MM-DD
+  function formatDate(date) {
+    const y = date.getFullYear();
+    const m = (date.getMonth()+1).toString().padStart(2,"0");
+    const d = date.getDate().toString().padStart(2,"0");
+    return `${y}-${m}-${d}`;
+  }
+
   function login() {
     const username = document.getElementById("username").value.trim().toLowerCase();
     const password = document.getElementById("password").value.trim();
@@ -169,7 +176,6 @@
 
     errorEl.textContent = "";
 
-    // Admin login
     if (username === adminEmail.toLowerCase() && password === adminPassword) {
       showAdminDashboard();
       loggedInUser = adminEmail;
@@ -177,7 +183,6 @@
       return;
     }
 
-    // Student login
     if (students[username] && students[username] === password) {
       loggedInUser = username;
       document.getElementById("login-box").style.display = "none";
@@ -188,54 +193,50 @@
     errorEl.textContent = "Incorrect username or password.";
   }
 
-  // ATTENDANCE SUBMIT + ZOOM JOIN
   function submitAndJoin() {
     const name = encodeURIComponent(loggedInUser);
+    const today = formatDate(new Date());
 
-    // Google Form pre-fill URL with "Name" field entry ID
-    const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSdGeAYRYu_wqk1TkW4E-A1El4pCTFxVpQAf1pSH2ejlqISXKg/viewform?usp=pp_url&entry.1441182965=" + name;
+    // Google Form pre-fill URL with your entry IDs for Date and Name
+    const formURL = `https://docs.google.com/forms/d/e/1FAIpQLScxFMIL7IVDoCg7kOKt1dtq0W2VQzd4WuxKL5PL8_Wbf9T3rw/viewform?usp=pp_url&entry.1317798729=${today}&entry.1489083822=${name}`;
 
     // Open the attendance form in a small hidden window and auto-submit after load
     const attendanceWindow = window.open(formURL, "attendanceWindow", "width=500,height=500,top=100,left=100");
 
-    // Auto-submit trick: wait for 2.5 seconds then submit form if possible
     setTimeout(() => {
       try {
         attendanceWindow.document.querySelector("form").submit();
         setTimeout(() => attendanceWindow.close(), 1000);
       } catch (e) {
-        // cross-origin might block this, so fallback is just leave window open for user
+        // cross-origin error, fallback is to leave form open for user
       }
     }, 2500);
 
-    // Open Zoom link after delay
+    // Open Zoom link after delay (replace with your Zoom meeting link)
     setTimeout(() => {
       window.open("https://us05web.zoom.us/j/85772820738?pwd=a41FF2MAs6cvlSsovfJzzaG2Sh4gLP.1", "_blank");
     }, 3500);
   }
 
-  // SHOW ADMIN DASHBOARD AND FETCH STATS
   function showAdminDashboard() {
     document.getElementById("login-box").style.display = "none";
     document.getElementById("main-content").style.display = "none";
     const adminDash = document.getElementById("admin-dashboard");
     adminDash.style.display = "block";
 
-    // Fetch attendance stats from Google Sheet (public CSV export)
-    const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=csv";
+    // Replace YOUR_SHEET_ID below with the ID of your Google Sheet linked to form responses
+    const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/1Tyk3A6VwBffR0DPv8Almv-rHFcv-gk-gDd3WTTx2ep4/export?format=csv";
 
     fetch(sheetCSVUrl)
       .then(res => res.text())
       .then(csvText => {
         const rows = csvText.trim().split("\n");
-        // Remove header row, count attendance entries
         const count = rows.length - 1;
         document.getElementById("attendance-count").textContent = count;
 
         if (count > 0) {
-          // Last student name from last row (assuming Name is 2nd column)
           const lastRow = rows[rows.length - 1].split(",");
-          const lastName = lastRow[1] || "N/A";
+          const lastName = lastRow[2] || "N/A"; // Adjust index if needed
           document.getElementById("last-student").textContent = lastName;
         } else {
           document.getElementById("last-student").textContent = "No attendance yet";
@@ -247,7 +248,6 @@
       });
   }
 
-  // LOGOUT
   function logout() {
     loggedInUser = "";
     document.getElementById("admin-dashboard").style.display = "none";
